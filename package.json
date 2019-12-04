@@ -1,0 +1,30 @@
+{
+  "name": "web-winner-3",
+  "version": "1.0.0",
+  "description": "Winner Train Bot Website with Node.js and Stripe",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/endaye/web-winner-3.git"
+  },
+  "keywords": [
+    "Winner",
+    "Train",
+    "Bot",
+    "Cook"
+  ],
+  "author": "endaye",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/endaye/web-winner-3/issues"
+  },
+  "homepage": "https://github.com/endaye/web-winner-3#readme",
+  "dependencies": {
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "stripe": "^7.14.0"
+  }
+}
