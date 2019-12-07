@@ -5,7 +5,11 @@
     <title>The Generics | Store</title>
     <meta name="description" content="This is the description">
     <link rel="stylesheet" href="styles.css" />
-    <script src="store.js" async></script>
+    <script scr="https://js.stripe.com/v3/" defer></script>
+    <script>
+        var stripePublicKey = '<%= stripePublicKey %>'
+    </script>
+    <script src="store.js" defer></script>
 </head>
 
 <body>
