@@ -1,54 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <title>Winner Train BOT</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/home.css">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <script src="/js/main.js" async></script>
+    <title>The Generics | Store</title>
+    <meta name="description" content="This is the description">
+    <link rel="stylesheet" href="styles.css" />
+    <script scr="https://checkout.stripe.com/checkout.js" async></script>
+    <script>
+        var stripePublicKey = '<%= stripePublicKey %>'
+    </script>
+    <script src="store.js" async></script>
 </head>
 
-<body class="bg-black">
-    <div class="container">
-        <nav class="navbar navbar-expand-sm bg-black navbar-dark">
-            <a class="navbar-brand mx-md-5 my-3" href="/">
-                <img src="/img/logo.png" width="40" height="40" alt="">
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end mx-md-5" id="collapsibleNavbar">
-                <ul class="navbar-nav text-right">
-                    <li class="nav-item mx-1 px-3 active">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item mx-1 px-3">
-                        <a class="nav-link" href="/purchase">Purchase</a>
-                    </li>
-                    <li class="nav-item mx-1 px-3 my-sm-0">
-                        <a class="nav-link" href="/about">About</a>
-                    </li>
-                </ul>
-            </div>
+<body>
+    <header class="main-header">
+        <nav class="main-nav nav">
+            <ul>
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="store.html">STORE</a></li>
+                <li><a href="about.html">ABOUT</a></li>
+            </ul>
         </nav>
-
-        <%- body %>
-        
-    </div>
-    <footer class="page-footer font-small pt-5">
-        <div class="footer-copyright text-center py-3">© <span class="current-year">----</span> 
-            <a href="https://twitter.com/botwinner" target="_blank">Winner Train.</a> | 
-            <a class="legal" href="/privacy-policy.html">Privacy Policy</a> |
-            <a class="legal" href="/refund-policy.html">Refund Policy</a> |
-            <a class="legal" href="/terms-of-service.html">Terms of Service</a> |
-            <a href="mailto:support@snkrcc.com">support@snkrcc.com</a>
+        <h1 class="band-name band-name-large">The Generics</h1>
+    </header>
+    <section class="container content-section">
+        <h2 class="section-header">MUSIC</h2>
+        <div class="shop-items">
+            <% items.music.forEach((item)=>{ %>
+            <div class="shop-item" data-item-id="<%= item.id %>">
+                <span class="shop-item-title"><%= item.name %></span>
+                <img class="shop-item-image" src="Images/<%= item.imgName %>">
+                <div class="shop-item-details">
+                    <span class="shop-item-price">$<%= item.price / 100 %></span>
+                    <button class="btn btn-primary shop-item-button" type="button">ADD TO CART</button>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </section>
+    <section class="container content-section">
+        <h2 class="section-header">MERCH</h2>
+        <div class="shop-items">
+            <% items.merch.forEach((item)=>{ %>
+            <div class="shop-item" data-item-id="<%= item.id %>">
+                <span class="shop-item-title"><%= item.name %></span>
+                <img class="shop-item-image" src="Images/<%= item.imgName %>">
+                <div class="shop-item-details">
+                    <span class="shop-item-price">$<%= item.price / 100 %></span>
+                    <button class="btn btn-primary shop-item-button" type="button">ADD TO CART</button>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </section>
+    <section class="container content-section">
+        <h2 class="section-header">CART</h2>
+        <div class="cart-row">
+            <span class="cart-item cart-header cart-column">ITEM</span>
+            <span class="cart-price cart-header cart-column">PRICE</span>
+            <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+        </div>
+        <div class="cart-items">
+        </div>
+        <div class="cart-total">
+            <strong class="cart-total-title">Total</strong>
+            <span class="cart-total-price">$0</span>
+        </div>
+        <button class="btn btn-primary btn-purchase" type="button">PURCHASE</button>
+    </section>
+    <footer class="main-footer">
+        <div class="container main-footer-container">
+            <h3 class="band-name">The Generics</h3>
+            <ul class="nav footer-nav">
+                <li>
+                    <a href="https://www.youtube.com" target="_blank">
+                        <img src="Images/YouTube Logo.png">
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.spotify.com" target="_blank">
+                        <img src="Images/Spotify Logo.png">
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.facebook.com" target="_blank">
+                        <img src="Images/Facebook Logo.png">
+                    </a>
+                </li>
+            </ul>
         </div>
     </footer>
 </body>
