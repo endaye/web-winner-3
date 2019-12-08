@@ -1,5 +1,25 @@
 <div class="purchase policy">
-    <div class=" policy-title privacy-header text-center mb-4">
+    <div class="purchase-title policy-title privacy-header text-center mb-4">
         <span>Purchase</span>
+    </div>
+
+    <div class="purchase-content my-5">
+        <% items.bot.forEach((item)=> { %>
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-10 col-lg-8 shop-item row" data-item-id="<%= item.id %>">
+                <div class="shop-item-title col-6 mt-1"><%= item.name %></div>
+                <div class="shop-item-price col-3 mt-1">$<%= item.price / 100 %></div>
+                <div class="shop-item-count col-3 mt-1">x <%= item.number %></div>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+    <div class="purchase-summary text-center my-5">
+        <span>Total: $<span id="total-price"> <%= items.bot.map(x => x.price * x.number).reduce((a, b) => a + b, 0) / 100 %></span></span>
+    </div>
+    <div class="row my-5 justify-content-center">
+        <div class="buy-btn-container">
+            <a class="buy-btn" href="./purchase"><span>Buy</span></a>
+        </div>
     </div>
 </div>

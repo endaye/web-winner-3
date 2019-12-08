@@ -44,12 +44,6 @@ app.get('/', (req, res) => {
     })
 })
 
-app.get('/purchase', (req, res) => {
-    res.render('purchase.ejs', {
-        active: 'purchase'
-    })
-})
-
 app.get('/about', (req, res) => {
     res.render('about.ejs', {
         active: 'about'
@@ -87,6 +81,21 @@ app.get('payment-fail', (req, res) => {
     })
 })
 
+app.get('/purchase', (req, res) => {
+    fs.readFile('items.json', (error, data) => {
+        if (error) {
+            res.status(500).redirect('/');
+        } else {
+            res.render('purchase.ejs', {
+                stripePublicKey: stripePublicKey,
+                active: 'purchase',
+                items: JSON.parse(data)
+            })
+        }
+    })
+    
+})
+
 app.get('/store', (req, res) => {
     fs.readFile('items.json', (error, data) => {
         if (error) {
@@ -103,7 +112,7 @@ app.get('/store', (req, res) => {
 app.post('/purchase', (req, res) => {
     fs.readFile('items.json', (error, data) => {
         if (error) {
-            res.status(500).end()
+            res.status(500).redirect('/');
         } else {
             const itemsJson = JSON.parse(data)
             const itemsArray = itemsJson.music.concat(itemsJson.merch)

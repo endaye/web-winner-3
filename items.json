@@ -2,6 +2,13 @@
     "bot": [{
         "id": 1,
         "name": "Winner Train Bot",
-        "price": 199
+        "price": 199,
+        "number": 1
+    },
+    {
+        "id": 2,
+        "name": "Winner Train Bot v2",
+        "price": 1999,
+        "number": 1
     }]
 }
