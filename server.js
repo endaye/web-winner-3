@@ -18,6 +18,24 @@ app.set('view engine', 'ejs')
 app.use(express.json())
 app.use(express.static('public'))
 
+stripe.checkout.sessions.create({
+        success_url: 'http://localhost:13000/index.html',
+        cancel_url: 'http://localhost:13000/about.html',
+        payment_method_types: ['card'],
+        line_items: [{
+            name: 'T-shirt',
+            description: 'Comfortable cotton t-shirt',
+            amount: 1500,
+            currency: 'usd',
+            quantity: 2,
+        }, ],
+        locale: 'auto',
+    },
+    function (err, session) {
+        // asynchronously called
+    }
+);
+
 app.get('/store', (req, res) => {
     fs.readFile('items.json', (error, data) => {
         if (error) {

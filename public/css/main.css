@@ -1,0 +1,26 @@
+.bg-black {
+    background-color: #13131c !important;
+}
+
+body,
+html {
+    height: 100%;
+}
+
+.container {
+    min-height: calc(100% - 98px);
+}
+
+.page-footer {
+    color: #666 !important;
+}
+
+.page-footer a {
+    color: #808080 !important;
+}
+
+.navbar-nav .nav-item.active {
+    background-color: #252537;
+    border-radius: 55px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, .1);
+}
