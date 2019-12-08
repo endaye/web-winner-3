@@ -131,4 +131,8 @@ app.post('/purchase', (req, res) => {
     })
 })
 
+app.get('*', function (req, res) {
+    res.status(404).redirect('/');
+});
+
 app.listen(13000)
