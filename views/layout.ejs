@@ -11,6 +11,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/policy.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <script src="/js/main.js" async></script>
 </head>
@@ -26,13 +27,13 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end mx-md-5" id="collapsibleNavbar">
                 <ul class="navbar-nav text-right">
-                    <li class="nav-item mx-1 px-3 active">
+                    <li class="nav-item mx-1 px-1 <% if(active == 'home') { %> active <% } %>">
                         <a class="nav-link" href="/">Home</a>
                     </li>
-                    <li class="nav-item mx-1 px-3">
+                    <li class="nav-item mx-1 px-2 <% if(active == 'purchase') { %> active <% } %>">
                         <a class="nav-link" href="/purchase">Purchase</a>
                     </li>
-                    <li class="nav-item mx-1 px-3 my-sm-0">
+                    <li class="nav-item mx-1 px-2 my-sm-0 <% if(active == 'about') { %> active <% } %>">
                         <a class="nav-link" href="/about">About</a>
                     </li>
                 </ul>
@@ -45,9 +46,9 @@
     <footer class="page-footer font-small pt-5">
         <div class="footer-copyright text-center py-3">© <span class="current-year">----</span> 
             <a href="https://twitter.com/botwinner" target="_blank">Winner Train.</a> | 
-            <a class="legal" href="/privacy-policy.html">Privacy Policy</a> |
-            <a class="legal" href="/refund-policy.html">Refund Policy</a> |
-            <a class="legal" href="/terms-of-service.html">Terms of Service</a> |
+            <a class="legal" href="/privacy-policy">Privacy Policy</a> |
+            <a class="legal" href="/refund-policy">Refund Policy</a> |
+            <a class="legal" href="/terms-of-service">Terms of Service</a> |
             <a href="mailto:support@snkrcc.com">support@snkrcc.com</a>
         </div>
     </footer>

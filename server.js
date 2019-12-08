@@ -12,15 +12,17 @@ console.log(stripeSecretKey, stripePublicKey)
 const express = require('express')
 const app = express()
 const fs = require('fs')
+const expressLayouts = require('express-ejs-layouts')
 const stripe = require('stripe')(stripeSecretKey)
 
 app.set('view engine', 'ejs')
 app.use(express.json())
 app.use(express.static('public'))
+app.use(expressLayouts)
 
 stripe.checkout.sessions.create({
-        success_url: 'http://localhost:13000/index.html',
-        cancel_url: 'http://localhost:13000/about.html',
+        success_url: 'http://localhost:13000/payment-succecc',
+        cancel_url: 'http://localhost:13000/payment-fail',
         payment_method_types: ['card'],
         line_items: [{
             name: 'T-shirt',
@@ -35,6 +37,55 @@ stripe.checkout.sessions.create({
         // asynchronously called
     }
 );
+
+app.get('/', (req, res) => {
+    res.render('home.ejs', {
+        active: 'home'
+    })
+})
+
+app.get('/purchase', (req, res) => {
+    res.render('purchase.ejs', {
+        active: 'purchase'
+    })
+})
+
+app.get('/about', (req, res) => {
+    res.render('about.ejs', {
+        active: 'about'
+    })
+})
+
+app.get('/privacy-policy', (req, res) => {
+    res.render('privacy-policy.ejs', {
+        active: null
+    })
+})
+
+app.get('/refund-policy', (req, res) => {
+    res.render('refund-policy.ejs', {
+        active: null
+    })
+})
+
+app.get('/terms-of-service', (req, res) => {
+    res.render('terms-of-service.ejs', {
+        active: null
+    })
+})
+
+app.get('payment-succecc', (req, res) => {
+    res.render('payment-succecc.ejs', {
+        active: null,
+        email: 'name@example.com'
+    })
+})
+
+app.get('payment-fail', (req, res) => {
+    res.render('payment-fail.ejs', {
+        active: null
+    })
+})
 
 app.get('/store', (req, res) => {
     fs.readFile('items.json', (error, data) => {
