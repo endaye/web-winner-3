@@ -1,7 +1,6 @@
 <script>
     var stripePublicKey = '<%= stripePublicKey %>'
 </script>
-
 <div class="purchase policy">
     <div class="purchase-title policy-title privacy-header text-center mb-4">
         <span>Purchase</span>
@@ -13,25 +12,31 @@
             <div class="col-md-10 col-lg-8 shop-item row" data-item-id="<%= item.id %>">
                 <div class="shop-item-title col-6 mt-1"><%= item.name %></div>
                 <div class="shop-item-price col-3 mt-1">$<%= item.price / 100 %></div>
-                <div class="shop-item-count col-3 mt-1">x <%= item.number %></div>
+                <div class="shop-item-count col-3 mt-1">x <%= item.quantity %></div>
             </div>
         </div>
         <% }) %>
     </div>
     <div class="purchase-summary text-center my-5">
         <span>Total: $<span id="total-price">
-                <%= items.bot.map(x => x.price * x.number).reduce((a, b) => a + b, 0) / 100 %></span></span>
+                <%= items.bot.map(x => x.price * x.quantity).reduce((a, b) => a + b, 0) / 100 %></span></span>
     </div>
     <div class="row my-5 justify-content-center">
         <div class="buy-btn-container">
-            <a class="buy-btn" href="./purchase"><span>Buy</span></a>
+            <input type="email" class="form-control" id="buy-custom-email" placeholder="name@example.com">
+        </div>
+        <div class="buy-btn-container">
+            <a onClick="purchaseClicked()" class="buy-btn"><span>Buy</span></a>
         </div>
     </div>
-    <form action="your-server-side-code" method="POST">
-        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key='<%= stripePublicKey %>'
-            data-amount="999" data-name="Stripe.com" data-description="Example charge"
-            data-image="https://stripe.com/img/documentation/checkout/marketplace.png" data-locale="auto"
-            data-zip-code="true">
-        </script>
-    </form>
+</div>
+
+<div class="purchase-loading policy">
+    <div class="purchase-title policy-title privacy-header text-center mb-4">
+        <span>Redirect to Stripe ...</span>
+    </div>
+    <div class="text-center my-5">
+        <img src="https://gifimage.net/wp-content/uploads/2017/08/loading-gif-transparent-6.gif" class="img-fluid"
+            alt="loading">
+    </div>
 </div>

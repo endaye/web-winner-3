@@ -6,6 +6,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const stripePublicKey = process.env.STRIPE_PUBLIC_KEY
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
+const endpointSecret = process.env.STRIPE_WEBHOOK;
 
 const express = require('express')
 const app = express()
@@ -13,14 +14,13 @@ const fs = require('fs')
 const expressLayouts = require('express-ejs-layouts')
 const stripe = require('stripe')(stripeSecretKey)
 const PORT = process.env.PORT || 3001;
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
+const bodyParser = require('body-parser')
 
 app.set('view engine', 'ejs')
 app.use(express.json())
 app.use(express.static('public'))
 app.use(expressLayouts)
-app.use(require('body-parser').urlencoded({
-    extended: false
-}))
 
 app.get('/', (req, res) => {
     res.render('home.ejs', {
@@ -52,15 +52,17 @@ app.get('/terms-of-service', (req, res) => {
     })
 })
 
-app.get('payment-success', (req, res) => {
+app.get('/payment-success', (req, res) => {
+    const sessionId = req.query.session_id
+    // console.log(sessionId)
     res.render('payment-success.ejs', {
         active: null,
         email: 'name@example.com'
     })
 })
 
-app.get('payment-fail', (req, res) => {
-    res.render('payment-fail.ejs', {
+app.get('/payment-cancel', (req, res) => {
+    res.render('payment-cancel.ejs', {
         active: null
     })
 })
@@ -80,54 +82,69 @@ app.get('/purchase', (req, res) => {
 
 })
 
-app.get('/store', (req, res) => {
-    fs.readFile('items.json', (error, data) => {
+app.post('/purchase', (req, res) => {
+    fs.readFile('items.json', async (error, data) => {
         if (error) {
-            res.status(500).end()
+            console.error(error)
+            res.status(500).redirect('/');
         } else {
-            res.render('store.ejs', {
-                stripePublicKey: stripePublicKey,
-                items: JSON.parse(data)
+            const items = JSON.parse(data)
+            let total = items.bot.map(x => x.price * x.quantity).reduce((a, b) => a + b, 0)
+            // console.log(total)
+            const session = await stripe.checkout.sessions.create({
+                customer_email: req.body.email,
+                payment_method_types: ['card'],
+                line_items: [{
+                    name: items.bot[0].name,
+                    description: items.bot[0].description,
+                    images: [items.bot[0].image],
+                    amount: total,
+                    currency: 'usd',
+                    quantity: 1,
+                }],
+                success_url: `${BASE_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+                cancel_url: `${BASE_URL}/payment-cancel`,
+            });
+            console.log(session)
+            res.json({
+                sessionId: session.id
             })
         }
     })
 })
 
-app.post('/purchase', (req, res) => {
-    fs.readFile('items.json', (error, data) => {
-        if (error) {
-            res.status(500).redirect('/');
-        } else {
-            const itemsJson = JSON.parse(data)
-            const itemsArray = itemsJson.music.concat(itemsJson.merch)
-            let total = 0
-            req.body.items.forEach((item) => {
-                const itemJson = itemsArray.find((i) => {
-                    return i.id == item.id
-                })
-                total = total + itemJson.price * item.quantity
-            })
-            stripe.charges.create({
-                amount: total,
-                source: req.body.stripeTokenId,
-                currency: 'usd'
-            }).then(() => {
-                console.log('Charge Successful')
-                res.json({
-                    message: 'Successfully purchased items'
-                })
-            }).catch(() => {
-                console.log('Charge Fail')
-                res.status(500).end()
-            })
-        }
-    })
-})
+app.post('/webhook', bodyParser.raw({
+    type: 'application/json'
+}), (request, response) => {
+    const sig = request.headers['stripe-signature'];
+
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    } catch (err) {
+        return response.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle the checkout.session.completed event
+    if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+
+        // Fulfill the purchase...
+        // handleCheckoutSession(session);
+        console.log(`🔔  Payment received!`);
+    }
+
+    // Return a response to acknowledge receipt of the event
+    response.json({
+        received: true
+    });
+});
 
 app.get('*', function (req, res) {
     res.status(404).redirect('/');
 });
 
 app.listen(PORT, () => {
-    console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`);
+    console.log(`🌎  ==> API Server now listening on PORT ${PORT}!    `);
 })
