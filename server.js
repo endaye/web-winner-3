@@ -148,5 +148,5 @@ app.get('*', function (req, res) {
 });
 
 app.listen(PORT, PRIVATE_IP, () => {
-    console.log(`🌎  ==> API Server now listening on PORT ${PORT}!    `);
+    console.log(`🌎  ==> API Server now listening on PORT ${PORT} and IP ${PRIVATE_IP}!   `);
 })
