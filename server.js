@@ -7,14 +7,16 @@ if (process.env.NODE_ENV !== 'production') {
 const stripePublicKey = process.env.STRIPE_PUBLIC_KEY
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 const endpointSecret = process.env.STRIPE_WEBHOOK;
+const PRIVATE_IP = process.env.PRIVATE_IP || 'localhost'
+const PORT = process.env.PORT || 3001;
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
 const express = require('express')
 const app = express()
 const fs = require('fs')
 const expressLayouts = require('express-ejs-layouts')
 const stripe = require('stripe')(stripeSecretKey)
-const PORT = process.env.PORT || 3001;
-const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
+
 const bodyParser = require('body-parser')
 
 app.set('view engine', 'ejs')
@@ -145,6 +147,6 @@ app.get('*', function (req, res) {
     res.status(404).redirect('/');
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, PRIVATE_IP, () => {
     console.log(`🌎  ==> API Server now listening on PORT ${PORT}!    `);
 })
