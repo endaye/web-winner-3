@@ -4,39 +4,23 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 const stripePublicKey = process.env.STRIPE_PUBLIC_KEY
-
-console.log(stripeSecretKey, stripePublicKey)
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 
 const express = require('express')
 const app = express()
 const fs = require('fs')
 const expressLayouts = require('express-ejs-layouts')
 const stripe = require('stripe')(stripeSecretKey)
+const PORT = process.env.PORT || 3001;
 
 app.set('view engine', 'ejs')
 app.use(express.json())
 app.use(express.static('public'))
 app.use(expressLayouts)
-
-stripe.checkout.sessions.create({
-        success_url: 'http://localhost:13000/payment-succecc',
-        cancel_url: 'http://localhost:13000/payment-fail',
-        payment_method_types: ['card'],
-        line_items: [{
-            name: 'T-shirt',
-            description: 'Comfortable cotton t-shirt',
-            amount: 1500,
-            currency: 'usd',
-            quantity: 2,
-        }, ],
-        locale: 'auto',
-    },
-    function (err, session) {
-        // asynchronously called
-    }
-);
+app.use(require('body-parser').urlencoded({
+    extended: false
+}))
 
 app.get('/', (req, res) => {
     res.render('home.ejs', {
@@ -68,8 +52,8 @@ app.get('/terms-of-service', (req, res) => {
     })
 })
 
-app.get('payment-succecc', (req, res) => {
-    res.render('payment-succecc.ejs', {
+app.get('payment-success', (req, res) => {
+    res.render('payment-success.ejs', {
         active: null,
         email: 'name@example.com'
     })
@@ -93,7 +77,7 @@ app.get('/purchase', (req, res) => {
             })
         }
     })
-    
+
 })
 
 app.get('/store', (req, res) => {
@@ -144,4 +128,6 @@ app.get('*', function (req, res) {
     res.status(404).redirect('/');
 });
 
-app.listen(13000)
+app.listen(PORT, () => {
+    console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`);
+})

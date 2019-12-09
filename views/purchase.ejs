@@ -1,3 +1,7 @@
+<script>
+    var stripePublicKey = '<%= stripePublicKey %>'
+</script>
+
 <div class="purchase policy">
     <div class="purchase-title policy-title privacy-header text-center mb-4">
         <span>Purchase</span>
@@ -15,11 +19,19 @@
         <% }) %>
     </div>
     <div class="purchase-summary text-center my-5">
-        <span>Total: $<span id="total-price"> <%= items.bot.map(x => x.price * x.number).reduce((a, b) => a + b, 0) / 100 %></span></span>
+        <span>Total: $<span id="total-price">
+                <%= items.bot.map(x => x.price * x.number).reduce((a, b) => a + b, 0) / 100 %></span></span>
     </div>
     <div class="row my-5 justify-content-center">
         <div class="buy-btn-container">
             <a class="buy-btn" href="./purchase"><span>Buy</span></a>
         </div>
     </div>
+    <form action="your-server-side-code" method="POST">
+        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key='<%= stripePublicKey %>'
+            data-amount="999" data-name="Stripe.com" data-description="Example charge"
+            data-image="https://stripe.com/img/documentation/checkout/marketplace.png" data-locale="auto"
+            data-zip-code="true">
+        </script>
+    </form>
 </div>
