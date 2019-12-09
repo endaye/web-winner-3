@@ -29,7 +29,18 @@
     font-weight: 500;
 }
 
-.purchase .shop-item-count input{
+.purchase .buy-email-container .input-email {
+    height: 46px;
+    padding: auto, 0;
+    border: solid 1px #ccc;
+    border-radius: 23px;
+    text-align: center;
+    color: #13131c;
+    font-weight: 500;
+    /* background-color: black; */
+}
+
+.purchase .shop-item-count input {
     width: 30px;
 }
 
