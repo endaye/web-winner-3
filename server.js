@@ -22,6 +22,15 @@ const bodyParser = require('body-parser')
 
 const fetch = require('node-fetch');
 
+let goods
+fs.readFile('items.json', (error, data) => {
+    if (error) {
+        console.error(error)
+    } else {
+        goods = JSON.parse(data)
+    }
+})
+
 const sendDiscordWebhook = (msg) => {
     fetch(discordWebhookUrl, {
         method: "POST",
@@ -98,49 +107,43 @@ app.get('/payment-cancel', (req, res) => {
 })
 
 app.get('/purchase', (req, res) => {
-    fs.readFile('items.json', (error, data) => {
-        if (error) {
-            res.status(500).redirect('/');
-        } else {
-            res.render('purchase.ejs', {
-                stripePublicKey: stripePublicKey,
-                active: 'purchase',
-                items: JSON.parse(data)
-            })
-        }
-    })
-
+    if (goods) {
+        res.render('purchase.ejs', {
+            stripePublicKey: stripePublicKey,
+            active: 'purchase',
+            items: goods
+        })
+    } else {
+        res.status(500).redirect('/');
+    }
 })
 
-app.post('/purchase', (req, res) => {
-    fs.readFile('items.json', async (error, data) => {
-        if (error) {
-            console.error(error)
-            res.status(500).redirect('/');
-        } else {
-            const items = JSON.parse(data)
-            let total = items.bot.map(x => x.price * x.quantity).reduce((a, b) => a + b, 0)
-            // console.log(total)
-            const session = await stripe.checkout.sessions.create({
-                customer_email: req.body.email,
-                payment_method_types: ['card'],
-                line_items: [{
-                    name: items.bot[0].name,
-                    description: items.bot[0].description,
-                    images: [items.bot[0].image],
-                    amount: total,
-                    currency: 'usd',
-                    quantity: 1,
-                }],
-                success_url: `${BASE_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-                cancel_url: `${BASE_URL}/payment-cancel`,
-            });
-            // console.log(session)
-            res.json({
-                sessionId: session.id
-            })
-        }
-    })
+app.post('/purchase', async (req, res) => {
+    if (goods) {
+        const items = goods
+        let total = items.bot.map(x => x.price * x.quantity).reduce((a, b) => a + b, 0)
+        // console.log(total)
+        const session = await stripe.checkout.sessions.create({
+            customer_email: req.body.email,
+            payment_method_types: ['card'],
+            line_items: [{
+                name: items.bot[0].name,
+                description: items.bot[0].description,
+                images: [items.bot[0].image],
+                amount: total,
+                currency: 'usd',
+                quantity: 1,
+            }],
+            success_url: `${BASE_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${BASE_URL}/payment-cancel`,
+        });
+        // console.log(session)
+        res.json({
+            sessionId: session.id
+        })
+    } else {
+        res.status(500).redirect('/');
+    }
 })
 
 app.post('/webhook', bodyParser.raw({
