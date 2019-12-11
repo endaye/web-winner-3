@@ -17,6 +17,24 @@ function ready() {
     if (purchaseLoading && purchaseLoading.length > 0) {
         purchaseLoading[0].style.visibility = 'hidden';
     }
+    var enterInput = document.getElementById('enter-code')
+    if (enterInput) {
+        enterInput.addEventListener("keyup", (event) => {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                enterClicked();
+            }
+        })
+    }
+    var buyInput = document.getElementById('buy-custom-email')
+    if (buyInput) {
+        buyInput.addEventListener("keyup", (event) => {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                purchaseClicked();
+            }
+        })
+    }
 }
 
 function purchaseClicked() {
@@ -65,6 +83,12 @@ function purchaseClicked() {
         // console.error(error)
         document.location.href = "payment-cancel";
     })
+}
+
+function enterClicked() {
+    var code = document.getElementById('enter-code').value.toUpperCase()
+    setCookie('winner-bot-enter-code', code, 0.0625)    // 90 min
+    window.location.href = '/'
 }
 
 function setCookie(cname, cvalue, exdays) {

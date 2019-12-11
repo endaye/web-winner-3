@@ -8,7 +8,7 @@ html {
 }
 
 .container {
-    min-height: calc(100% - 98px);
+    min-height: calc(100% - 112px);
 }
 
 .page-footer {

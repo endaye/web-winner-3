@@ -1,0 +1,38 @@
+.enter .enter-logo-container {
+    margin-top: 20%;
+}
+
+.enter .enter-btn-container {
+    text-align: center;
+}
+
+.enter .enter-btn-container .enter-btn {
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 12.5px;
+    padding-bottom: 12.5px;
+    border-radius: 600px;
+    background-color: #42d97c;
+    color: #fff;
+    font-weight: 500;
+}
+
+.enter .enter-code-container .input-enter-code {
+    height: 46px;
+    padding: auto, 0;
+    border: solid 1px #ccc;
+    border-radius: 23px;
+    text-align: center;
+    color: #13131c;
+    font-weight: 500;
+    /* background-color: black; */
+}
+
+.box {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

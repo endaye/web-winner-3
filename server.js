@@ -11,16 +11,16 @@ const PRIVATE_IP = process.env.PRIVATE_IP || 'localhost'
 const PORT = process.env.PORT || 3001
 const BASE_URL = process.env.BASE_URL || `http://${PRIVATE_IP}:${PORT}`
 const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL
+const enterCode = process.env.ENTER_CODE
 
 const express = require('express')
 const app = express()
 const fs = require('fs')
 const expressLayouts = require('express-ejs-layouts')
 const stripe = require('stripe')(stripeSecretKey)
-
 const bodyParser = require('body-parser')
-
 const fetch = require('node-fetch');
+const cookieParser = require("cookie-parser");
 
 let goods
 fs.readFile('items.json', (error, data) => {
@@ -56,18 +56,38 @@ const handleCheckoutSession = (session) => {
     }
 }
 
+const checkCode = (req, res, next) => {
+    const code = req.cookies['winner-bot-enter-code']
+    if (code.toUpperCase() === enterCode.toUpperCase()) {
+        next();
+    } else {
+        res.render('enter.ejs', {
+            layout: false,
+            enter: "RE-ENTER CODE"
+        })
+    }
+}
+
 app.set('view engine', 'ejs')
 app.use(express.json())
 app.use(express.static('public'))
 app.use(expressLayouts)
+app.use(cookieParser())
 
-app.get('/', (req, res) => {
+app.get('/', checkCode, (req, res) => {
     res.render('home.ejs', {
         active: 'home'
     })
 })
 
-app.get('/about', (req, res) => {
+app.get('/enter', (req, res) => {
+    res.render('enter.ejs', {
+        layout: false,
+        enter: "ENTER CODE"
+    })
+})
+
+app.get('/about', checkCode, (req, res) => {
     res.render('about.ejs', {
         active: 'about'
     })
@@ -91,22 +111,21 @@ app.get('/terms-of-service', (req, res) => {
     })
 })
 
-app.get('/payment-success', (req, res) => {
+app.get('/payment-success', checkCode, (req, res) => {
     const sessionId = req.query.session_id
     // console.log(sessionId)
     res.render('payment-success.ejs', {
         active: null,
-        email: 'name@example.com'
     })
 })
 
-app.get('/payment-cancel', (req, res) => {
+app.get('/payment-cancel', checkCode, (req, res) => {
     res.render('payment-cancel.ejs', {
         active: null
     })
 })
 
-app.get('/purchase', (req, res) => {
+app.get('/purchase', checkCode, (req, res) => {
     if (goods) {
         res.render('purchase.ejs', {
             stripePublicKey: stripePublicKey,
