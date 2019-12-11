@@ -6,10 +6,11 @@ if (process.env.NODE_ENV !== 'production') {
 
 const stripePublicKey = process.env.STRIPE_PUBLIC_KEY
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-const endpointSecret = process.env.STRIPE_WEBHOOK;
+const endpointSecret = process.env.STRIPE_WEBHOOK
 const PRIVATE_IP = process.env.PRIVATE_IP || 'localhost'
-const PORT = process.env.PORT || 3001;
-const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
+const PORT = process.env.PORT || 3001
+const BASE_URL = process.env.BASE_URL || `http://${PRIVATE_IP}:${PORT}`
+const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL
 
 const express = require('express')
 const app = express()
@@ -18,6 +19,33 @@ const expressLayouts = require('express-ejs-layouts')
 const stripe = require('stripe')(stripeSecretKey)
 
 const bodyParser = require('body-parser')
+
+const fetch = require('node-fetch');
+
+const sendDiscordWebhook = (msg) => {
+    fetch(discordWebhookUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            "username": msg.username,
+            "content": `email: ${msg.customer_email}`
+        })
+    }).catch(err => {
+        console.error(err)
+    })
+}
+
+const handleCheckoutSession = (session) => {
+    // console.log(session)
+    if (session) {
+        sendDiscordWebhook({
+            username: "Winner-Sell",
+            customer_email: session.customer_email,
+        })
+    }
+}
 
 app.set('view engine', 'ejs')
 app.use(express.json())
@@ -107,7 +135,7 @@ app.post('/purchase', (req, res) => {
                 success_url: `${BASE_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
                 cancel_url: `${BASE_URL}/payment-cancel`,
             });
-            console.log(session)
+            // console.log(session)
             res.json({
                 sessionId: session.id
             })
@@ -133,7 +161,7 @@ app.post('/webhook', bodyParser.raw({
         const session = event.data.object;
 
         // Fulfill the purchase...
-        // handleCheckoutSession(session);
+        handleCheckoutSession(session);
         console.log(`🔔  Payment received!`);
     }
 

@@ -14,7 +14,7 @@ function ready() {
         emails[i].innerText = " " + getCookie('winner-bot-email')
     }
     var purchaseLoading = document.getElementsByClassName('purchase-loading')
-    if (purchaseLoading) {
+    if (purchaseLoading && purchaseLoading.length > 0) {
         purchaseLoading[0].style.visibility = 'hidden';
     }
 }
