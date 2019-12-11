@@ -58,7 +58,12 @@ const handleCheckoutSession = (session) => {
 
 const checkCode = (req, res, next) => {
     const code = req.cookies['winner-bot-enter-code'] || ""
-    if (code.toUpperCase() === enterCode.toUpperCase()) {
+    if (code === "") {
+        res.render('enter.ejs', {
+            layout: false,
+            enter: "ENTER CODE"
+        })
+    } else if (code.toUpperCase() === enterCode.toUpperCase()) {
         next();
     } else {
         res.render('enter.ejs', {
