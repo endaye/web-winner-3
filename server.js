@@ -57,7 +57,7 @@ const handleCheckoutSession = (session) => {
 }
 
 const checkCode = (req, res, next) => {
-    const code = req.cookies['winner-bot-enter-code']
+    const code = req.cookies['winner-bot-enter-code'] || ""
     if (code.toUpperCase() === enterCode.toUpperCase()) {
         next();
     } else {
