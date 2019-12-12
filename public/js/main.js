@@ -87,13 +87,13 @@ function purchaseClicked() {
 
 function enterClicked() {
     var code = document.getElementById('enter-code').value.toUpperCase()
-    setCookie('winner-bot-enter-code', code, 0.0625)    // 90 min
+    setCookie('winner-bot-enter-code', code, 0.01041667)    // 15 min
     window.location.href = '/'
 }
 
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    d.setTime(d.getTime() + Math.floor(exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
