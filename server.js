@@ -23,11 +23,23 @@ const fetch = require('node-fetch');
 const cookieParser = require("cookie-parser");
 
 let goods
-fs.readFile('items.json', (error, data) => {
+fs.readFile('json/items.json', (error, data) => {
     if (error) {
         console.error(error)
     } else {
         goods = JSON.parse(data)
+    }
+})
+
+const codes = [enterCode.toUpperCase()]
+fs.readFile('json/codes.json', (error, data) => {
+    if (error) {
+        console.error(error)
+    } else {
+        const code = JSON.parse(data)
+        if (code && code.enter && code.enter.length > 0) {
+            code.enter.forEach(c => codes.push(c.toUpperCase()))
+        }
     }
 })
 
@@ -63,7 +75,7 @@ const checkCode = (req, res, next) => {
             layout: false,
             enter: "ENTER CODE"
         })
-    } else if (code.toUpperCase() === enterCode.toUpperCase()) {
+    } else if (codes.includes(code.toUpperCase())) {
         next();
     } else {
         res.render('enter.ejs', {
