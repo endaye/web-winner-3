@@ -12,36 +12,31 @@ const PORT = process.env.PORT || 3001
 const BASE_URL = process.env.BASE_URL || `http://${PRIVATE_IP}:${PORT}`
 const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL
 const enterCode = process.env.ENTER_CODE
-
 const express = require('express')
 const app = express()
 const fs = require('fs')
+const util = require('util')
 const expressLayouts = require('express-ejs-layouts')
 const stripe = require('stripe')(stripeSecretKey)
 const bodyParser = require('body-parser')
 const fetch = require('node-fetch');
 const cookieParser = require("cookie-parser");
 
+const readFilePromise = util.promisify(fs.readFile)
+
 let goods
-fs.readFile('json/items.json', (error, data) => {
-    if (error) {
-        console.error(error)
-    } else {
-        goods = JSON.parse(data)
-    }
-})
+readFilePromise('json/items.json')
+    .then(data => goods = JSON.parse(data))
+    .catch(err => console.error(err))
 
 const codes = [enterCode.toUpperCase()]
-fs.readFile('json/codes.json', (error, data) => {
-    if (error) {
-        console.error(error)
-    } else {
+readFilePromise('json/codes.json')
+    .then(data => {
         const code = JSON.parse(data)
         if (code && code.enter && code.enter.length > 0) {
             code.enter.forEach(c => codes.push(c.toUpperCase()))
         }
-    }
-})
+    }).catch(err => console.error(err))
 
 const sendDiscordWebhook = (msg) => {
     fetch(discordWebhookUrl, {
