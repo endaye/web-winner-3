@@ -51,7 +51,7 @@ const sendDiscordWebhook = (msg) => {
         },
         body: JSON.stringify({
             "username": msg.username,
-            "content": `email: ${msg.customer_email}`
+            "content": msg.content
         })
     }).catch(err => {
         console.error(err)
@@ -63,7 +63,7 @@ const handleCheckoutSession = (session) => {
     if (session) {
         sendDiscordWebhook({
             username: "Winner-Sell",
-            customer_email: session.customer_email,
+            content: `email: ${session.customer_email}`,
         })
     }
 }
@@ -216,4 +216,8 @@ app.get('*', function (req, res) {
 
 app.listen(PORT, PRIVATE_IP, () => {
     console.log(`🌎  ==> API Server now listening on PORT ${PORT} and IP ${PRIVATE_IP}!   `);
+    sendDiscordWebhook({
+        username: 'Winner-Sell',
+        content: `Website is restart, enter code is ${codes.toString()}`
+    })
 })
