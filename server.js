@@ -58,7 +58,7 @@ const handleCheckoutSession = (session) => {
     if (session) {
         sendDiscordWebhook({
             username: "Winner-Sell",
-            content: `email: ${session.customer_email}`,
+            content: `🔔  Payment received!\nemail: ${session.customer_email}`,
         })
     }
 }
@@ -180,23 +180,34 @@ app.post('/purchase', async (req, res) => {
 app.post('/webhook', bodyParser.raw({
     type: 'application/json'
 }), (request, response) => {
-    const sig = request.headers['stripe-signature'];
-
-    let event;
-
+    let event
     try {
-        event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+        event = request.body
     } catch (err) {
+        console.error(err)
         return response.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    // Handle the checkout.session.completed event
-    if (event.type === 'checkout.session.completed') {
-        const session = event.data.object;
-
-        // Fulfill the purchase...
-        handleCheckoutSession(session);
-        console.log(`🔔  Payment received!`);
+    switch (event.type) {
+        case 'checkout.session.completed':
+            // Handle the checkout.session.completed event
+            const session = event.data.object;
+            // Fulfill the purchase...
+            handleCheckoutSession(session);
+            console.log(`🔔  Payment received!`);
+            break;
+        case 'payment_intent.succeeded':
+            const paymentIntent = event.data.object;
+            // handlePaymentIntentSucceeded(paymentIntent);
+            break;
+        case 'payment_method.attached':
+            const paymentMethod = event.data.object;
+            // handlePaymentMethodAttached(paymentMethod);
+            break;
+            // ... handle other event types
+        default:
+            // Unexpected event type
+            return response.status(400).end();
     }
 
     // Return a response to acknowledge receipt of the event
