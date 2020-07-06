@@ -45,8 +45,10 @@ const sendDiscordWebhook = (msg) => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "username": msg.username,
-            "content": msg.content
+            "msgtype": "text",
+            "text": {
+                "content": `${msg.username}. ${msg.content}`
+            }
         })
     }).catch(err => {
         console.error(err)
@@ -194,7 +196,7 @@ app.post('/webhook', bodyParser.raw({
             const session = event.data.object;
             // Fulfill the purchase...
             handleCheckoutSession(session);
-            console.log(`🔔  Payment received!`);
+            // console.log(`🔔  Payment received!`);
             break;
         case 'payment_intent.succeeded':
             const paymentIntent = event.data.object;
